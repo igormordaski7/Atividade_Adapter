@@ -11,18 +11,18 @@ O sistema suporta atualmente Twitter, Instagram, LinkedIn e TikTok, mas pode ser
 
 Estrutura do Projeto
 
-1. Classe Conteudo
+## 1. Classe Conteudo
 
 Responsável por armazenar o conteúdo a ser publicado nas redes sociais.
 
-public class Conteudo {
-    private String texto;
-    private String imagem;
-
-    public Conteudo(String texto, String imagem) { ... }
-    public String getTexto() { ... }
-    public String getImagem() { ... }
-}
+    public class Conteudo {
+        private String texto;
+        private String imagem;
+    
+        public Conteudo(String texto, String imagem) { ... }
+        public String getTexto() { ... }
+        public String getImagem() { ... }
+    }
 
 Atributos: texto, imagem
 Métodos: getTexto(), getImagem()
@@ -32,9 +32,9 @@ Métodos: getTexto(), getImagem()
 
 Interface comum para todos os Adapters.
 
-public interface MidiaSocial {
-    void publicar(Conteudo conteudo);
-}
+    public interface MidiaSocial {
+        void publicar(Conteudo conteudo);
+    }
 
 Todos os Adapters implementam esta interface para garantir consistência.
 
@@ -43,20 +43,20 @@ Todos os Adapters implementam esta interface para garantir consistência.
 
 Simulam as APIs reais das redes sociais:
 
-public class TwitterAPI { public void tweet(String mensagem) { ... } }
-public class InstagramAPI { public void postarImagem(String legenda, String caminhoImagem) { ... } }
-public class LinkedInAPI { public void compartilharPost(String conteudo) { ... } }
-public class TikTokAPI { public void postarVideo(String descricao) { ... } }
+    public class TwitterAPI { public void tweet(String mensagem) { ... } }
+    public class InstagramAPI { public void postarImagem(String legenda, String caminhoImagem) { ... } }
+    public class LinkedInAPI { public void compartilharPost(String conteudo) { ... } }
+    public class TikTokAPI { public void postarVideo(String descricao) { ... } }
 
 
 4. Adapters
 
 Adaptam cada API original para a interface MidiaSocial.
 
-public class TwitterAdapter implements MidiaSocial { ... }
-public class InstagramAdapter implements MidiaSocial { ... }
-public class LinkedInAdapter implements MidiaSocial { ... }
-public class TikTokAdapter implements MidiaSocial { ... }
+    public class TwitterAdapter implements MidiaSocial { ... }
+    public class InstagramAdapter implements MidiaSocial { ... }
+    public class LinkedInAdapter implements MidiaSocial { ... }
+    public class TikTokAdapter implements MidiaSocial { ... }
 
 Cada Adapter contém sua API original (composição).
 Implementa o método publicar(Conteudo) usando a API correspondente.
@@ -66,27 +66,28 @@ Implementa o método publicar(Conteudo) usando a API correspondente.
 
 Define como o conteúdo será publicado.
 
-public interface EstrategiaPublicacao {
-    void executar(MidiaSocial midia, Conteudo conteudo);
-}
+    public interface EstrategiaPublicacao {
+        void executar(MidiaSocial midia, Conteudo conteudo);
+    }
 
-public class EstrategiaTexto implements EstrategiaPublicacao { ... }
-public class EstrategiaImagem implements EstrategiaPublicacao { ... }
+    public class EstrategiaTexto implements EstrategiaPublicacao { ... }
+    public class EstrategiaImagem implements EstrategiaPublicacao { ... }
 
 EstrategiaTexto: publica apenas o texto do conteúdo.
 EstrategiaImagem: publica texto + imagem.
-O GerenciadorMidiaSocial usa uma instância de EstrategiaPublicacao para publicar em todas as plataformas.
 
+
+O GerenciadorMidiaSocial usa uma instância de EstrategiaPublicacao para publicar em todas as plataformas.
 
 6. GerenciadorMidiaSocial
 
 Gerencia múltiplas plataformas de mídia social.
 
-public class GerenciadorMidiaSocial<T extends MidiaSocial> {
-    private List<T> plataformas;
-    public void adicionarPlataforma(T midia) { ... }
-    public void publicarTodos(Conteudo conteudo, EstrategiaPublicacao estrategia) { ... }
-}
+    public class GerenciadorMidiaSocial<T extends MidiaSocial> {
+        private List<T> plataformas;
+        public void adicionarPlataforma(T midia) { ... }
+        public void publicarTodos(Conteudo conteudo, EstrategiaPublicacao estrategia) { ... }
+    }
 
 Mantém uma lista thread-safe de Adapters.
 Publica conteúdo em paralelo usando a estratégia definida.
@@ -96,9 +97,9 @@ Publica conteúdo em paralelo usando a estratégia definida.
 
 Cria instâncias dos Adapters de forma centralizada.
 
-public class MidiaSocialFactory {
-    public static MidiaSocial criarMidia(String tipo) { ... }
-}
+    public class MidiaSocialFactory {
+        public static MidiaSocial criarMidia(String tipo) { ... }
+    }
 
 
 Facilita a adição de novas redes sociais sem modificar código existente.
@@ -109,20 +110,20 @@ Evita acoplamento direto no Main.
 
 Exemplo de uso do sistema:
 
-public class Main {
-    public static void main(String[] args) {
-        GerenciadorMidiaSocial<MidiaSocial> gerenciador = new GerenciadorMidiaSocial<>();
-        gerenciador.adicionarPlataforma(MidiaSocialFactory.criarMidia("twitter"));
-        gerenciador.adicionarPlataforma(MidiaSocialFactory.criarMidia("instagram"));
-        gerenciador.adicionarPlataforma(MidiaSocialFactory.criarMidia("linkedin"));
-        gerenciador.adicionarPlataforma(MidiaSocialFactory.criarMidia("tiktok"));
-
-        Conteudo conteudo = new Conteudo("Lançando novo produto!", "imagem.png");
-        EstrategiaPublicacao estrategia = new EstrategiaTexto();
-
-        gerenciador.publicarTodos(conteudo, estrategia);
+    public class Main {
+        public static void main(String[] args) {
+            GerenciadorMidiaSocial<MidiaSocial> gerenciador = new GerenciadorMidiaSocial<>();
+            gerenciador.adicionarPlataforma(MidiaSocialFactory.criarMidia("twitter"));
+            gerenciador.adicionarPlataforma(MidiaSocialFactory.criarMidia("instagram"));
+            gerenciador.adicionarPlataforma(MidiaSocialFactory.criarMidia("linkedin"));
+            gerenciador.adicionarPlataforma(MidiaSocialFactory.criarMidia("tiktok"));
+    
+            Conteudo conteudo = new Conteudo("Lançando novo produto!", "imagem.png");
+            EstrategiaPublicacao estrategia = new EstrategiaTexto();
+    
+            gerenciador.publicarTodos(conteudo, estrategia);
+        }
     }
-}
 
 Cria o gerenciador de mídias sociais.
 Adiciona Adapters via Factory.
