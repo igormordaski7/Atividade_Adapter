@@ -1,4 +1,4 @@
-Sistema de Integração de Redes Sociais com Padrão Adapter
+## Sistema de Integração de Redes Sociais com Padrão Adapter 
 
 Descrição
 Este projeto implementa um sistema de integração unificada de múltiplas redes sociais utilizando padrões de design de software:
